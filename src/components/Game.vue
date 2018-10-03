@@ -1,40 +1,55 @@
 <template>
   <div class="container" id="content">
-    <div id="progress-bar">
-      <div id="progress-bar-change"></div>
+    <div id="progress-bar" style="visibility: hidden;">
+      <v-progress-linear 
+      :value="value"
+      background-color="blue-grey"
+      color="lime"
+      height="10"
+      style="border-radius: 12px"
+      >
+      {{ value }}
+    </v-progress-linear >
+</div>
+    <div class="top">
+      <div id="score" style="visibility: hidden;">Score {{ this.score }}</div>
+      <div id="resetBtn"><v-btn id="reset" v-on:click="restart" icon color="success" style="visibility: hidden;"><v-icon>cached</v-icon></v-btn></div>
     </div>
+    
     <div class="content">
-      <v-btn depressed v-on:click="game" id="startBtn">Click To Start</v-btn>
+      <v-btn depressed large v-on:click="game" id="startBtn">Click To Start</v-btn>
       <div id="equation"></div>
       <div class="btn">
         <span>
-          <v-btn depressed id="btn1" style="visibility: hidden;" v-on:click="trueClicked">True</v-btn>
-          <v-btn depressed id="btn2" style="visibility: hidden;" v-on:click="falseClicked">False</v-btn>
+          <v-btn depressed large id="btn1" style="visibility: hidden;" v-on:click="trueClicked"><v-icon>done</v-icon></v-btn>
+          <v-btn depressed large id="btn2" style="visibility: hidden;" v-on:click="falseClicked"><v-icon>clear</v-icon></v-btn>
         </span>
       </div>
-      <br />
-      <div class="score">
-        <div id="score">Score: {{ this.score }}</div>
+      <div class="status">
         <div id="status"></div>
       </div>
-      <button v-on:click="restart" style="visibility: hidden;" id="reset">Click To Restart</button>
+      <v-btn depressed class="btn" v-on:click="restart" style="visibility: hidden;" id="reset">Click To Restart</v-btn>
     </div>
   </div>
 </template>
 
 <script>
 var compareSums;
-var backgroundColor = ["#F39C12", "#8E44AD", "#27AE60", "#16A085", "#7F8C8D"];
-var progressBar, progressTimer, timeOut;
+var backgroundColor = ["#F39C12", "#8E44AD", "#27AE60", "#16A085", "#7F8C8D", "#006E6D", "#BE9EC9"];
+var progressBar, progressTimer, timeOut, outOfTime;
 
 export default {
   name: "Game",
   data() {
     return {
       score: 0,
-      state: ""
+      interval: {},
+      value: 0
     };
   },
+  beforeDestroy () {
+      clearInterval(this.interval)
+    },
   methods: {
     restart() {
       this.score = 0;
@@ -46,9 +61,10 @@ export default {
       document.getElementById("startBtn").style.visibility = "hidden";
       document.getElementById("btn1").style.visibility = "visible";
       document.getElementById("btn2").style.visibility = "visible";
+      document.getElementById("score").style.visibility = "visible"; 
+      document.getElementById("progress-bar").style.visibility = "visible"; 
+      document.getElementById("reset").style.visibility = "visible";
       document.getElementById("status").innerHTML = "";
-      document.getElementById("progress-bar-change").style.visibility =
-        "hidden";
     },
     game() {
       this.countDownTimer();
@@ -77,9 +93,11 @@ export default {
 
     gameOver: function() {
       document.getElementById("status").innerHTML = "Game Over";
+      document.getElementById("status").style.color = "#DC4C46";
       document.getElementById("reset").style.visibility = "visible";
       document.getElementById("btn1").style.visibility = "hidden";
       document.getElementById("btn2").style.visibility = "hidden";
+      this.value = 0;
     },
 
     trueClicked: function() {
@@ -99,22 +117,18 @@ export default {
       }
     },
     setBackgroundColor: function() {
-      var color =
-        backgroundColor[Math.floor(Math.random() * backgroundColor.length)];
+      var color = backgroundColor[Math.floor(Math.random() * backgroundColor.length)];
       document.getElementById("content").style.backgroundColor = color;
     },
     countDownTimer: function() {
-      progressBar = document.getElementById("progress-bar-change");
-      var width = 10;
-      var id = setInterval(frame, 10);
-      function frame() {
-        if (width >= 100) {
-          clearInterval(id);
+      this.interval = setInterval(() => {
+        if (this.value == 100) {
+          clearInterval(this.interval)
+          this.gameOver();
         } else {
-          width++;
-        }
-      }
-    }
+        this.value ++;
+      }}, 20);
+    },
   }
 }
 </script>
@@ -138,34 +152,89 @@ body {
   border-radius: 8px;
   background-color: cornflowerblue;
 }
+.top {
+  position: relative;
+}
+#score {
+  position: absolute;
+  right: 0;
+  padding-top: 20px;
+  padding-right: 15px;
+}
+#resetBtn {
+  position: absolute;
+  left: 0;
+  font-size: 8px;
+  padding-top: 5px;
+}
+#score, #resetBtn {
+    display: inline;
+}
 #equation {
   height: 53%;
   color: #ffffff;
   font-size: 120px;
   text-align: center;
 }
-
 #btn1 {
   background-color: green;
   color: #ffffff;
+  font-size: 20px;
+  box-shadow: 0 5px #999;
+  border-radius: 12px;
+}
+#btn1:hover {
+  background-color: #4CAF50;
+  color: white;
+  font-size: 25px;
+  box-shadow: 0 9px #999;
+  border-radius: 12px;
 }
 #btn2 {
   background-color: red;
   color: #ffffff;
+  font-size: 20px;
+  box-shadow: 0 5px #999;
+  border-radius: 12px;
 }
-#progress-bar-change {
-  height: 10px;
-  background-color: #4caf50;
-  text-align: center; /* To center it horizontally (if you want) */
-  line-height: 10px; /* To center it vertically */
+#btn2:hover {
+  background-color: #f44336;
   color: white;
+  font-size: 25px;
+  box-shadow: 0 9px #999;
+  border-radius: 12px;
 }
-.score {
-  font-size: 32pt;
+#startBtn{
+  background-color: #9068be;
+  color: white;
+  font-size: 20px;
+  border-radius: 2px;
+  box-shadow: 0 9px gray;
+  border-radius: 18px;
+}
+#startBtn:hover{
+  background-color: #dddfd4;
+  color: white;
+  font-size: 20px;
+  border-radius: 2px;
+  box-shadow: 0 9px #999;
+  border-radius: 18px;
+}
+.v-progress-linear{
+  margin: auto;
+}
+#score {
+  font-size: 11pt;
   text-transform: uppercase;
   color: #ffffff;
 }
-.content {
-  align-content: center;
+.status {
+  font-size: 52pt;
+  text-transform: uppercase;
+  letter-spacing: 3px;
 }
+.content {
+  display: inline-block;
+}
+
 </style>

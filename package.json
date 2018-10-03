@@ -2,6 +2,7 @@
   "name": "madmath",
   "version": "1.0.0",
   "private": true,
+  "wst": "/dist/",
   "scripts": {
     "build": "node build/build.js",
     "dev": "webpack-dev-server --inline --progress --config build/webpack.dev.conf.js",
@@ -10,6 +11,7 @@
   },
   "dependencies": {
     "vue": "^2.5.2",
+    "vue-gh-pages": "^1.19.0",
     "vue-material": "^1.0.0-beta-10.2",
     "vuetify": "^1.2.0"
   },

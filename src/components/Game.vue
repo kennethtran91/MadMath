@@ -71,15 +71,14 @@ export default {
       //var operands = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 13, 15, 20, 92, 99];
       var operands = Array.from(
         { length: 15 },
-        () => Math.floor(Math.random() * 36) + 1
+        () => Math.floor(Math.random() * 20) + 1
       );
-      var deviation = [-1, 0, 2, 1];
+      var deviation = [-1, 0, 1];
       var operand1 = operands[Math.floor(Math.random() * operands.length)];
       var operand2 = operands[Math.floor(Math.random() * operands.length)];
       var correctSum = operand1 + operand2;
 
-      var shownSum =
-        correctSum + deviation[Math.floor(Math.random() * deviation.length)];
+      var shownSum = correctSum + deviation[Math.floor(Math.random() * deviation.length)];
 
       var resultString =
         operand1.toString() +
@@ -146,14 +145,11 @@ export default {
 <style scoped>
 body {
   display: fixed;
-  height: 655px;
-  overflow-y: scroll;
+  overflow-y: hidden;
   overflow-x: hidden; /* hides the horizontal scroll bar */
 }
 .container {
-  width: 500px;
-  height: 655px;
-  margin-top: 10px;
+  margin-top: 1px;
   margin-left: auto;
   margin-right: auto;
   border-left: 3px solid #ffffff;
@@ -161,6 +157,7 @@ body {
   border-bottom: 3px solid #ffffff;
   border-radius: 8px;
   background-color: cornflowerblue;
+  min-height: 100vh;
 }
 .top {
   position: relative;
@@ -184,7 +181,7 @@ body {
 #equation {
   height: 53%;
   color: #ffffff;
-  font-size: 120px;
+  font-size: 5.5em;
   text-align: center;
 }
 #btn1 {
@@ -244,12 +241,12 @@ body {
   color: #ffffff;
 }
 .status {
-  font-size: 52pt;
+  font-size: 4em;
   text-transform: uppercase;
   letter-spacing: 3px;
 }
 .content {
-  display: inline-block;
+  height: 100%;
 }
 @keyframes blinking {
   0% {
